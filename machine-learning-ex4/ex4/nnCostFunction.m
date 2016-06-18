@@ -62,23 +62,50 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+% FeedForward and get matrix of output.
+hx1 = sigmoid([ones(m, 1) X]*Theta1');
+hx2 = sigmoid([ones(m, 1) hx1]*Theta2');
+        
+for i = 1:m
+    x = hx2(i, :);
+    num = y(i, 1);
+    % Create corresponding y based on its label.
+    yk = zeros(num_labels, 1);
+    yk(num, 1) = 1;
+    J = J + 1/m * sum(-log(x)*yk - log(1 - x)*(1 - yk));
+end
+
+% Remove the first column before calculation
+value = sum(sum(Theta1(:, 2:end) .^ 2)) ...
+      + sum(sum(Theta2(:, 2:end) .^ 2));
+
+J = J + (lambda/(2*m))*value;
 
 
+a1 = [ones(m, 1) X]; % 5000 X 401
+z2 = a1*Theta1'; % 5000 X 25
+a2 = [ones(m, 1) sigmoid(z2)]; % 5000 X 26
+z3 = a2*Theta2'; % 5000 X 10
+a3 = sigmoid(z3);% 5000 X 10
 
+yk = zeros(m, num_labels);
+for i=1:m
+    num = y(i, 1);
+    yk(i, num) = 1;
+end
 
+b3 = a3 - yk; % 5000 X 10
+b2 = b3*Theta2(:, 2:end) .* sigmoidGradient(z2); % 5000 X 25
 
+delta2 = b3' * a2; % 10 X 26
+lambda2 = lambda/m * Theta2;
+lambda2(:, 1) = 0;
+Theta2_grad = 1/m * delta2 + lambda2;
 
-
-
-
-
-
-
-
-
-
-
-
+delta1 = b2' * a1; % 25 X 401
+lambda1 = lambda/m * Theta1;
+lambda1(:, 1) = 0;
+Theta1_grad = 1/m * delta1 + lambda1;
 
 % -------------------------------------------------------------
 
