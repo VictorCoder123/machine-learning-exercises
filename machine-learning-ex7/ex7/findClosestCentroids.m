@@ -21,6 +21,20 @@ idx = zeros(size(X,1), 1);
 % Note: You can use a for-loop over the examples to compute this.
 %
 
+m = size(X, 1);
+
+for i=1:m
+   v1 = X(i, :);
+   max = realmax();
+   for n=1:K
+       v2 = centroids(n, :);
+       dist = sum((v1 - v2) .^ 2);
+       if dist < max
+           max = dist;
+           idx(i, 1) = n;
+       end
+   end
+end
 
 
 
