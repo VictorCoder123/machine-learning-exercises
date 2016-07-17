@@ -41,12 +41,12 @@ Theta_grad = zeros(size(Theta));
 %
 
 
+matrix = 1/2 * ((X * Theta' - Y) .* R) .^ 2;
+J = sum(sum(matrix)) + lambda/2 * (sum(sum(Theta .^ 2)) + sum(sum(X .^ 2)));
 
+X_grad = ((X * Theta' - Y) .* R) * Theta + lambda * X;
 
-
-
-
-
+Theta_grad = ((X * Theta' - Y) .* R)' * X + lambda * Theta;
 
 
 
